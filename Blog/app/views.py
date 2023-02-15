@@ -6,7 +6,6 @@ from django.shortcuts import render
 from django.http.response import JsonResponse
 
 from rest_framework import generics
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -35,24 +34,11 @@ def title_list(request):
         else:
             return Response(serializer.errors)
 
-
-
 class postuser(generics.ListAPIView):
     serializer_class = TableSerializer
     def get_queryset(self):
         User = self.kwargs['pk']
         return Table.objects.filter(User= User)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def update(request, t):
-    tablepost = Table.objects.get(t = Table.User)
-    if request.method == "PUT":
-        serializer = TableSerializer(tablepost, data=request.data)
-        data = {}
-        if serializer.is_valid():
-            serializer.save()
-            print("wdda")
-        return Response(serializer.data)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def edit(request,pk):
@@ -62,7 +48,7 @@ def edit(request,pk):
         return JsonResponse({'message':'It does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        table_serializer = TableSerializer(Table)
+        table_serializer = TableSerializer(table)
         return JsonResponse(table_serializer.data)
 
     elif request.method == 'PUT':
@@ -77,30 +63,3 @@ def edit(request,pk):
         table.delete()
         return JsonResponse({'message': 'Tutorial was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
-
-class UpdatePostViewSet(ModelViewSet):
-    queryset = Table.objects.all()
-    serializer_class = UpdatePostSerializer
-    permission_classes = (IsAuthenticated,)
-    http_method_names = ['patch', ]
-    lookup_field = "id"
-
-    def update(self, request, pk=None, *args, **kwargs):
-        user = request.user
-        instance = self.get_object()
-        data = {
-            "title": request.POST.get('title', None),
-            }
-        serializer = self.serializer_class(instance=instance,
-                                           data=data, # or request.data
-                                           context={'author': user},
-                                           partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-    
