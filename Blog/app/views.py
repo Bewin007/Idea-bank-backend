@@ -2,21 +2,26 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.contrib.auth import login
 
-from django.http.response import JsonResponse
+from rest_framework import generics, permissions
+from rest_framework import status
+from rest_framework import permissions
 
-from rest_framework import generics
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 
+from knox.models import AuthToken
+from knox.views import LoginView as KnoxLoginView
 
-from .serializers import TableSerializer
-from .models import Table
+from .serializers import TableSerializer,UserSerializer,RegisterSerializer
+from .models import Table,User
 
 #from .viewset import UserViewSet
 
@@ -39,6 +44,7 @@ class postuser(generics.ListAPIView):
     def get_queryset(self):
         User = self.kwargs['pk']
         return Table.objects.filter(User= User)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def edit(request,pk):
@@ -63,3 +69,31 @@ def edit(request,pk):
         table.delete()
         return JsonResponse({'message': 'Tutorial was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
+class RegisterAPI(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+        "email": UserSerializer(user, context=self.get_serializer_context()).data,
+        "token": AuthToken.objects.create(user)[1]
+        })
+
+class LoginAPI(KnoxLoginView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, format=None):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        return super(LoginAPI, self).post(request, format=None)
+
+@api_view(['GET'])
+def postregisterdetail(request):
+    if request.method == 'GET':
+        titles = User.objects.all()  #complex data
+        serializer = UserSerializer(titles,many = True)
+        return Response(serializer.data)

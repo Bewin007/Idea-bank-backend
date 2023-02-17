@@ -5,3 +5,7 @@ djangorestframework-simplejwt
 pyyaml
 requests
 django-cors-headers
+
+cryptography
+drf-jwt
+pyjwt
