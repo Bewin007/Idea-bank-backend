@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class TableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Table
-        fields = ['User','Title','Content','id']
+        fields = ['User','Title','Content','id','Upvote','Downvote']
 
 # Login and reg
 class UserSerializer(serializers.ModelSerializer):

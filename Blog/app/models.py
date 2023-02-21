@@ -5,6 +5,8 @@ class Table(models.Model):
     User = models.CharField(max_length=30, blank=False, default='')
     Title = models.CharField(max_length=50, blank=False, default='')
     Content = models.CharField(max_length=250, blank=False, default='')
+    Upvote = models.IntegerField(default=0)
+    Downvote = models.IntegerField(default=0)
 
     def __str__(self):
         return self.Title

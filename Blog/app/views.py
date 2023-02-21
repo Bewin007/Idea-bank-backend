@@ -97,3 +97,18 @@ def postregisterdetail(request):
         titles = User.objects.all()  #complex data
         serializer = UserSerializer(titles,many = True)
         return Response(serializer.data)
+
+
+class PostVote(generics.UpdateAPIView):
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
+    def voting(self,request,*args,**kwargs):
+        post = self.get_object()
+        vote_type = request.data.get('vote_type')
+        if vote_type =='upvote':
+            post.Upvote +=1
+        elif vote_type == 'downvote':
+            post.Downvote +=1
+        post.save()
+        serializer = self.get_serializer(post)
+        return Response(serializer.data, status=status.HTTP_200_OK)
