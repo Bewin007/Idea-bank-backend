@@ -57,7 +57,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 
-
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.contrib.auth.middleware.RemoteUserMiddleware',
 ]
 

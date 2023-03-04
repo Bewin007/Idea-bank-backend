@@ -98,7 +98,6 @@ def postregisterdetail(request):
         serializer = UserSerializer(titles,many = True)
         return Response(serializer.data)
 
-
 class PostVote(generics.UpdateAPIView):
     queryset = Table.objects.all()
     serializer_class = TableSerializer

@@ -19,3 +19,7 @@ class User(models.Model):
     def __str__(self):
         return self.Name
 
+class Vote(models.Model):
+    Upvote = models.CharField(max_length=255, blank=False, default='')
+    Downvote = models.CharField(max_length=255, blank=False, default='')
+
