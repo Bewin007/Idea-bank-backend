@@ -59,6 +59,7 @@ MIDDLEWARE = [
 
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.contrib.auth.middleware.RemoteUserMiddleware',
+    
 ]
 
 

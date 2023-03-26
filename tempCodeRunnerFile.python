@@ -1,8 +1,0 @@
-import requests
-from bs4 import BeautifulSoup
-  
-URL = "https://tome.app/abraham-rosin/unveiling-eulers-rule-for-image-contouring-cleocybdw0cnp4scn1ouukshm"
-r = requests.get(URL)
-  
-soup = BeautifulSoup(r.content, 'html5lib') # If this line causes an error, run 'pip install html5lib' or install html5lib
-print(soup.prettify())
